@@ -1,4 +1,4 @@
-# Check if IIS is installed and running
+# Check if IIS is installed and running test
 Import-Module ServerManager
 
 if (-not (Get-WindowsFeature -Name Web-Server).Installed) {
@@ -18,6 +18,18 @@ Write-Output "IIS is installed and running. Proceeding with the rest of the scri
 
 # Import the WebAdministration module to work with IIS
 Import-Module WebAdministration
+
+# Get the current day of the week (0 = Sunday, 6 = Saturday)
+$dayOfWeek = (Get-Date).DayOfWeek
+ 
+# Check if today is Saturday or Sunday
+$isWeekend = ($dayOfWeek -eq "Saturday" -or $dayOfWeek -eq "Sunday")
+ 
+#Write-Output "Is it the weekend?: $isWeekend"
+If($isWeekend){
+    $AlertsDays = 25
+}else{$AlertsDays = 30}
+
 
 # Get the list of all IIS websites
 $sites = Get-Website
@@ -53,7 +65,8 @@ foreach ($site in $sites) {
                     $failureReasons += "Certificate has expired"
                     Write-Output "  WARNING: Certificate has expired!"
                     $siteFailed = $true
-                } elseif ($daysUntilExpiration -le 30) {  #EDIT the days to mute the issues over a weekend
+                } 
+                elseif ($daysUntilExpiration -le $AlertsDays) { 
                     $failureReasons += "Certificate is expiring in $daysUntilExpiration days"
                     Write-Output "  WARNING: Certificate is expiring in $daysUntilExpiration days!"
                     $siteFailed = $true
@@ -104,7 +117,7 @@ if ($failedSites.Count -gt 0) {
     Write-Output "Sending email"
 
     $username = "HeartBeat@autoshack.com"
-    $password = "XXX"
+    $password = "c6IE6#6!k0!D"
     $myPwd = ConvertTo-SecureString -string $password -AsPlainText -Force
     $cred = New-Object System.Management.Automation.PSCredential -argumentlist $username, $myPwd
 
