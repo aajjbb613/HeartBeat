@@ -80,7 +80,7 @@ if ($stoppedServices.Count -gt 0 -or $recoveredServices.Count -gt 0) {
     Write-Output "Sending email"
 
     $username = "HeartBeat@autoshack.com"
-    $password = "c6IE6#6!k0!D"
+    $password = "XXX"
     $myPwd = ConvertTo-SecureString -string $password -AsPlainText -Force
     $cred = New-Object System.Management.Automation.PSCredential -argumentlist $username, $myPwd
 
