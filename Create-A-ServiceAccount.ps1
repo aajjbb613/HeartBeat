@@ -1,6 +1,8 @@
 ﻿Write-Host "Welcome to autoshack's Create-A-ServiceAccount"
  
 $SvrName = Read-Host "Enter the server name"
+
+$DC = "svr-dc-04"
  
 $pingResult = Test-Connection -ComputerName $SvrName -Count 1 -ErrorAction SilentlyContinue
 if ($pingResult -ne $null) {
@@ -19,7 +21,7 @@ if ($pingResult -ne $null) {
  
     
  
-    Invoke-Command -ComputerName SVR-DC-04  -ScriptBlock{ 
+    Invoke-Command -ComputerName $DC -ScriptBlock{ 
         New-ADServiceAccount -name $Using:SaName -DNSHostName $Using:DNSName -Enabled $true -ManagedPasswordIntervalInDays 30
         Start-Sleep -Seconds 5
         Add-ADComputerServiceAccount -Identity $Using:SvrName -ServiceAccount $Using:SaName
